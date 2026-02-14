@@ -506,7 +506,7 @@ function HeartLockBridge() {
     { initials: "U + Me", promise: "Forever and always" },
     { initials: "♥", promise: "Through thick and thin" },
     { initials: "∞", promise: "Infinite love" },
-    { initials: "2024", promise: "Our best year yet" },
+    { initials: "2025", promise: "Our best year yet" },
     { initials: "4ever", promise: "Never letting go" },
     { initials: "True Love", promise: "In this life and the next" },
   ];
