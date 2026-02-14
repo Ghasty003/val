@@ -3,6 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Float } from "@react-three/drei";
 import * as THREE from "three";
 import "./App.css";
+import adeola from "./assets/adeola.jpg";
 
 // Error Boundary for 3D Canvas
 class ErrorBoundary extends React.Component<
@@ -92,6 +93,79 @@ function RotatingHeart() {
   );
 }
 
+// 3D Floating Polaroid with Her Photo
+function FloatingPolaroid() {
+  const polaroidRef = useRef<THREE.Group>(null);
+  const [hovered, setHovered] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useFrame((state) => {
+    if (polaroidRef.current) {
+      // Gentle floating animation
+      polaroidRef.current.position.y =
+        Math.sin(state.clock.elapsedTime * 0.5) * 0.3;
+      // Gentle rotation
+      if (!hovered) {
+        polaroidRef.current.rotation.y =
+          Math.sin(state.clock.elapsedTime * 0.3) * 0.2;
+      } else {
+        // Spin when hovered
+        polaroidRef.current.rotation.y += 0.02;
+      }
+    }
+  });
+
+  // Load texture (placeholder - replace with actual photo path)
+  const texture = new THREE.TextureLoader().load(adeola);
+
+  // Responsive positioning
+  const position: [number, number, number] = isMobile
+    ? [0, -2, 3] // Mobile: centered and forward, lower
+    : [3.5, 0, 2]; // Desktop: to the right
+
+  const scale = isMobile ? 0.8 : 1; // Slightly smaller on mobile
+
+  return (
+    <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.5}>
+      <group
+        ref={polaroidRef}
+        position={position}
+        scale={scale}
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
+        onClick={() => setHovered(!hovered)} // Toggle on click/tap for mobile
+      >
+        {/* Polaroid frame (white border) */}
+        <mesh>
+          <boxGeometry args={[2, 2.4, 0.1]} />
+          <meshStandardMaterial color="#ffffff" />
+        </mesh>
+
+        {/* Photo */}
+        <mesh position={[0, 0.15, 0.06]}>
+          <planeGeometry args={[1.8, 1.8]} />
+          <meshStandardMaterial map={texture} />
+        </mesh>
+
+        {/* Shadow effect */}
+        <mesh position={[0, 0, -0.06]} rotation={[0, 0, 0]}>
+          <boxGeometry args={[2.05, 2.45, 0.05]} />
+          <meshStandardMaterial color="#e0e0e0" />
+        </mesh>
+      </group>
+    </Float>
+  );
+}
+
 // 3D Scene Component
 function Scene3D() {
   return (
@@ -101,6 +175,7 @@ function Scene3D() {
       <pointLight position={[-10, -10, -10]} />
 
       <RotatingHeart />
+      <FloatingPolaroid />
       <FloatingHeart position={[-3, 0, 0]} />
       <FloatingHeart position={[3, 1, -2]} />
       <FloatingHeart position={[0, -1, 2]} />
@@ -117,9 +192,10 @@ function CountdownTimer() {
   const [days, setDays] = useState(0);
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
-    const startDate = new Date("2024-06-14"); // Change this to your date
+    const startDate = new Date("2025-11-30T00:00:00");
 
     const updateCountdown = () => {
       const now = new Date();
@@ -128,14 +204,16 @@ function CountdownTimer() {
       const d = Math.floor(diff / (1000 * 60 * 60 * 24));
       const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const s = Math.floor((diff % (1000 * 60)) / 1000);
 
       setDays(d);
       setHours(h);
       setMinutes(m);
+      setSeconds(s);
     };
 
     updateCountdown();
-    const interval = setInterval(updateCountdown, 60000);
+    const interval = setInterval(updateCountdown, 1000); // Update every second
     return () => clearInterval(interval);
   }, []);
 
@@ -154,6 +232,10 @@ function CountdownTimer() {
         <div className="countdown-box">
           <div className="countdown-number">{minutes}</div>
           <div className="countdown-label">Minutes</div>
+        </div>
+        <div className="countdown-box">
+          <div className="countdown-number">{seconds}</div>
+          <div className="countdown-label">Seconds</div>
         </div>
       </div>
     </div>
@@ -568,7 +650,7 @@ export default function ValentineWebsite() {
         <div className="hero-canvas">
           <ErrorBoundary fallback={<div className="canvas-fallback" />}>
             <Canvas
-              camera={{ position: [0, 0, 8], fov: 50 }}
+              camera={{ position: [0, 0, 8], fov: 60 }}
               gl={{
                 antialias: true,
                 alpha: true,
