@@ -346,14 +346,13 @@ function ConstellationOfUs() {
   const [selectedStar, setSelectedStar] = useState<number | null>(null);
 
   const stars = [
-    { x: 20, y: 30, date: "First Date", memory: "The day everything changed" },
+    { x: 20, y: 30, date: "Day we met", memory: "The day everything changed" },
     {
       x: 45,
       y: 20,
       date: "First Kiss",
       memory: "Under the stars, time stood still",
     },
-    { x: 70, y: 40, date: "First Trip", memory: "Adventures began with you" },
     {
       x: 30,
       y: 60,

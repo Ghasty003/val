@@ -400,6 +400,17 @@ body {
   }
 }
 
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Bucket List */
 .bucket-grid {
   display: grid;
@@ -1041,6 +1052,35 @@ body {
 
 /* Responsive adjustments for new sections */
 @media (max-width: 768px) {
+  /* Fix lock promise to appear ABOVE locks on mobile */
+  .lock-promise {
+    top: auto;
+    bottom: 100%;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    animation: fadeInDown 0.3s ease;
+  }
+  
+  /* Add extra padding to bridge section so messages don't get cut off */
+  .love-lock-bridge {
+    padding: 3rem 2rem;
+  }
+  
+  /* Fix star info to appear above stars on mobile */
+  .star-info {
+    top: auto;
+    bottom: 100%;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    animation: fadeInDown 0.3s ease;
+  }
+  
+  /* Extra padding for constellation to prevent cutoff */
+  .constellation-map {
+    padding: 2rem 1rem;
+    min-height: 450px;
+  }
+  
   .bottles-container {
     gap: 1rem;
   }
@@ -1064,6 +1104,6 @@ body {
   
   .locks-grid {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 1rem;
+    gap: 3rem 1rem; /* More vertical gap for messages appearing above */
   }
 }
